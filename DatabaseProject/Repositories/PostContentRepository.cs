@@ -10,32 +10,34 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DatabaseProject.Repositories
 {
-    public class PostContentRepository :IPostContentRepository
+    public class PostContentRepository : IPostContentRepository
     {
         WatnContentDbContext _DbContext;
         public PostContentRepository(WatnContentDbContext DbContext)
         {
             _DbContext = DbContext;
 
-        }       
+        }
         public List<PostContent> GetContents(int PageNumber, int RecordsPerPage)
-        { 
+        {
             var webContents = _DbContext.PostContents
-                .Include(a=>a.Author)
-                .Include(p=>p.PostType).Skip((PageNumber - 1) * RecordsPerPage)
-                                    .Take(RecordsPerPage).ToList().OrderByDescending(a=>a.DatePublished).ToList();
+                .Include(a => a.Author)
+                .Include(p => p.PostType).Skip((PageNumber - 1) * RecordsPerPage)
+                                    .Take(RecordsPerPage).ToList().OrderByDescending(a => a.DatePublished).ToList();
             return webContents;
         }
         public PostContent ContentById(int id)
         {
-            var webContent = _DbContext.PostContents.Find(id);
+            var webContent = _DbContext.PostContents
+                .Include(a => a.Author)
+                .Include(p => p.PostType).Where(p => p.Id == id).FirstOrDefault();
             return webContent;
         }
         public PostContent AddContent(PostContentRequest postContentRequest)
         {
             Author author = new Author();
             author.Author1 = postContentRequest.Author;
-            author.IsActive= true;
+            author.IsActive = true;
             _DbContext.Authors.Add(author);
 
             _DbContext.SaveChanges();
@@ -52,8 +54,8 @@ namespace DatabaseProject.Repositories
             obj.DatePublished = postContentRequest.DatePublished;
             obj.AuthorId = author.Id;
             obj.PostTypeId = postType.Id;
-            obj.TheContent=postContentRequest.TheContent;
-            obj.IsActive = postContentRequest.IsActive;  
+            obj.TheContent = postContentRequest.TheContent;
+            obj.IsActive = postContentRequest.IsActive;
             _DbContext.PostContents.Add(obj);
             _DbContext.SaveChanges();
 

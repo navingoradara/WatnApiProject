@@ -14,11 +14,11 @@ builder.Services.AddSwaggerGen();
 
 
 // UseInMemoryDatabase
-//builder.Services.AddDbContext<WatnContentDbContext>(options => options.UseInMemoryDatabase("WatnWebContentDb"));
+builder.Services.AddDbContext<WatnContentDbContext>(options => options.UseInMemoryDatabase("WatnContentDb"));
 
 //SQL Server Database 
-builder.Services.AddDbContext<WatnContentDbContext>(options =>
-options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
+//builder.Services.AddDbContext<WatnContentDbContext>(options =>
+//options.UseSqlServer(builder.Configuration.GetConnectionString("DbConnection")));
 
 
 builder.Services.AddScoped<IPostContentRepository, PostContentRepository>();
